@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>aerascps.™ Scenepack Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one graphite column, 1120px max. Banner strip, filmstrip hero with three actions,
+   stat rail, moving roster, ranked trending list, team. Single black-and-grey theme by choice, no colour. */
+:root{
+  color-scheme:dark;
+  --bg:#0d0d0e;
+  --surface:#171719;
+  --raised:#232326;
+  --line:#2d2d31;
+  --text:#f3f3f4;
+  --muted:#8d8d95;
+  --accent:#f3f3f4;
+  --accent-ink:#0d0d0e;
+  --display:"Bricolage Grotesque","Arial Narrow",Arial,sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05;letter-spacing:-.02em}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:rgba(13,13,14,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+.brand{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.03em}
+.brand sup{font-size:.5em;color:var(--muted)}
+.nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.nav a,.nav button{padding:8px 12px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted)}
+.nav a:hover,.nav button:hover{color:var(--text);background:var(--surface)}
+.nav a[aria-current="page"]{color:var(--text);background:var(--raised)}
+.social{display:flex;gap:6px}
+.social a,.social button{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);color:var(--muted)}
+.social a:hover,.social button:hover{color:var(--accent);border-color:var(--accent)}
+.social svg{width:17px;height:17px;fill:currentColor}
+
+/* banner */
+.banner{background:#d9d9dc !important;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px 20px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px;text-align:center}
+.banner svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.reel{position:absolute;inset:0;display:grid;gap:10px;align-content:center;opacity:.7;transform:rotate(-4deg) scale(1.15)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 8%,rgba(13,13,14,.82) 48%,rgba(13,13,14,.25) 100%),linear-gradient(0deg,var(--bg),transparent 35%)}
+.strip{display:flex;gap:10px;width:max-content;animation:slide 60s linear infinite}
+.strip.rev{animation-direction:reverse;animation-duration:80s}
+.frame{width:210px;aspect-ratio:16/9;border-radius:8px;border:1px solid var(--line);background:linear-gradient(135deg,var(--raised),var(--surface));position:relative;flex:none}
+.frame::after{content:attr(data-t);position:absolute;left:10px;bottom:8px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em}
+.frame:nth-child(3n){background:linear-gradient(200deg,#38383c,#1d1d20)}
+.frame:nth-child(4n+1){background:linear-gradient(20deg,#141416,#2c2c30)}
+@keyframes slide{to{transform:translateX(-33.333%)}}
+.marquee .row{animation-name:slide2 !important}
+@keyframes slide2{to{transform:translateX(-50%)}}
+.hero-body{position:relative;z-index:1;padding:84px 20px 64px;display:grid;gap:22px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(40px,7.6vw,88px);font-weight:800;max-width:13ch}
+.hero p{max-width:52ch;margin:0;color:var(--muted);font-size:18px}
+.cta{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.cta a,.cta button{display:grid;gap:4px;text-align:left;padding:18px 20px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);transition:transform .15s,border-color .15s}
+.cta a:hover,.cta button:hover{transform:translateY(-2px);border-color:var(--text)}
+.cta a,.cta button{background:rgba(23,23,25,.85)}
+.cta .primary:hover{background:#fff}
+.cta .primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cta b{font-family:var(--display);font-size:20px;letter-spacing:-.01em}
+.cta span{font-size:14px;color:var(--muted)}
+.cta .primary span{color:var(--accent-ink);opacity:.75}
+
+/* sections */
+section{padding:52px 0}
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.head h2{font-size:clamp(26px,4vw,38px);font-weight:700}
+.more{font-size:14px;font-weight:700;color:var(--accent)}
+.more:hover{text-decoration:underline}
+.note{font-size:13px;color:var(--muted);margin:14px 0 0}
+
+/* roster */
+.marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marquee .row{display:flex;gap:14px;width:max-content;animation:slide 45s linear infinite}
+.marquee:hover .row{animation-play-state:paused}
+.artist{display:grid;gap:10px;width:150px;flex:none}
+.ava{aspect-ratio:1;border-radius:var(--r);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:40px;color:rgba(243,243,244,.6);filter:grayscale(1);transition:filter .2s,transform .2s}
+.artist:hover .ava{border-color:var(--text);filter:grayscale(1) brightness(1.35);transform:translateY(-3px)}
+.artist .nm{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:14px}
+.artist .nm i{font-style:normal;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.grid .artist{width:auto}
+
+/* trending */
+.rank{display:grid;gap:8px;list-style:none;margin:0;padding:0}
+.rank a{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:14px;padding:14px 18px;border-radius:var(--r);background:linear-gradient(90deg,var(--raised) var(--w,0%),var(--surface) var(--w,0%));border:1px solid var(--line);transition:transform .15s,border-color .15s}
+.rank a:hover{border-color:var(--text);transform:translateX(4px)}
+.rank .n{font-family:var(--display);font-weight:800;font-size:24px;color:var(--muted)}
+.rank li:nth-child(-n+3) .n{color:var(--accent)}
+.rank .t{font-weight:700}
+.rank .a{font-size:13px;color:var(--muted)}
+.rank .v{font-size:14px;color:var(--muted);white-space:nowrap}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.tile{position:relative;aspect-ratio:1;border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(160deg,var(--raised),var(--surface));display:grid;place-items:center;text-align:center;padding:16px;font-family:var(--display);font-weight:700;font-size:18px}
+.tile{transition:transform .15s,border-color .15s;overflow:hidden}
+.tile::before{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;background:repeating-linear-gradient(90deg,var(--line) 0 10px,transparent 10px 18px);opacity:.7}
+.tile:hover{border-color:var(--text);transform:translateY(-3px)}
+.tile[hidden]{display:none}
+.tile .q{position:absolute;top:10px;right:10px;font-family:var(--body);font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--text);color:var(--bg)}
+.tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.tools input{flex:1 1 240px;max-width:380px;background:var(--surface)}
+.tools .chips{margin:0}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.step{padding:22px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);display:grid;gap:8px}
+.step i{font-style:normal;font-family:var(--display);font-weight:800;font-size:34px;color:var(--muted)}
+.step h3{font-size:20px}
+.step p{margin:0;color:var(--muted);font-size:14px}
+.tile small{display:block;font-family:var(--body);font-weight:500;font-size:12px;color:var(--muted);margin-top:6px}
+.badge{position:absolute;top:10px;left:10px;font-family:var(--body);font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.badge.live{color:var(--text);border-color:#5c5c63}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{padding:7px 14px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+/* pack page, forms, team */
+.back{display:inline-block;margin-bottom:18px;font-size:14px;font-weight:600;color:var(--muted)}
+.back:hover{color:var(--text)}
+.pack{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:28px;align-items:start}
+.pack .cover{aspect-ratio:1;border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(160deg,var(--raised),var(--surface));display:grid;place-items:center;font-family:var(--display);font-size:64px;font-weight:800;color:var(--muted)}
+.pack h1{font-size:clamp(30px,5vw,46px);font-weight:800;margin-bottom:6px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:10px 22px;margin:22px 0}
+dt{color:var(--muted);font-size:14px}
+dd{margin:0;font-weight:600}
+.btn{display:inline-block;padding:13px 22px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.ghost{background:none;color:var(--text);border:1px solid var(--line)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;max-width:640px}
+form{display:grid;gap:16px}
+label{display:grid;gap:6px;font-size:14px;font-weight:600}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+textarea{min-height:110px;resize:vertical}
+pre{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;font:500 14px/1.5 var(--body);margin:14px 0}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.person{display:flex;gap:14px;align-items:center;padding:18px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.person .pf{width:56px;height:56px;border-radius:50%;background:var(--raised);display:grid;place-items:center;font-family:var(--display);font-weight:800;color:var(--muted);flex:none}
+.person b{display:block}
+.person span{font-size:13px;color:var(--muted)}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.role{display:grid;gap:10px;padding:22px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.role h3{font-size:22px}
+.role p{margin:0;color:var(--muted);font-size:14px}
+.role .btn{justify-self:start;margin-top:6px}
+
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--text);color:var(--bg);font-weight:700;font-size:14px;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;max-width:calc(100% - 32px);text-align:center}
+#toast.on{opacity:1}
+@media (max-width:640px){
+  .pack{grid-template-columns:1fr}
+  .stat{border-left:0;border-top:1px solid var(--line)}
+  .rank a{grid-template-columns:32px 1fr;}
+  .rank .v{grid-column:2}
+  .nav{margin-left:0;order:3;width:100%}
+  .hero::after{background:rgba(13,13,14,.8)}
+  .hero-body{padding-top:56px;padding-bottom:44px}
+  .social{margin-left:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  .strip,.marquee .row{animation:none}
+  .marquee{overflow-x:auto}
+  .cta a,.cta button,.tile,.rank a,.ava{transition:none}
+  .dot{animation:none}
+}
+.ava,.tile,.cover{overflow:hidden}
+.ava img,.cover img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35)}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(.35) brightness(.55)}
+.tile .tt{position:relative}
+.push{margin-left:auto}
+.btn.sm{padding:7px 14px;font-size:13px}
+.btn.discord{display:inline-flex;align-items:center;gap:10px}
+.btn.discord svg{width:20px;height:20px;fill:currentColor}
+.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+.lock{max-width:520px;margin:40px auto;text-align:center;padding:40px 28px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);display:grid;gap:16px;justify-items:center}
+.lock svg:first-child{width:44px;height:44px;fill:none;stroke:var(--muted);stroke-width:1.6}
+.lock h2{font-size:30px}
+.lock p{margin:0;color:var(--muted)}
+.who{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600}
+.who img{width:28px;height:28px;border-radius:50%}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px}
+.kpis div{padding:18px 20px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.kpis b{display:block;font-family:var(--display);font-size:30px}
+.kpis span{font-size:13px;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;align-items:start;margin:24px 0}
+.panel h3{font-size:22px;margin-bottom:16px}
+.panel.wide{max-width:none}
+.cols .panel{max-width:none}
+form.two{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.sub{font-size:20px;margin:28px 0 12px}
+.rows{display:grid;gap:8px}
+.rows.tight{margin-top:16px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.panel .row{background:var(--bg)}
+.row>div{flex:1 1 200px;min-width:0}
+.row b{display:block;overflow-wrap:anywhere}
+.row span{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.badge.st{position:static;text-transform:capitalize}
+
+.shead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.shead h2{font-size:clamp(34px,6vw,60px);font-weight:700;margin-top:10px}
+.spill{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:14px;color:var(--muted)}
+.spill i{width:8px;height:8px;border-radius:50%;background:#55555c}
+.spill i.on{background:var(--text)}
+.sgrid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px}
+.scard{position:relative;overflow:hidden;display:grid;align-content:start;gap:14px;padding:28px;border:1px solid var(--line);border-radius:22px;background:#111113}
+.scard.big{padding:36px;min-height:380px}
+.scard.big::after{content:"";position:absolute;right:-90px;top:-120px;width:300px;height:300px;border-radius:50%;border:26px solid var(--raised);opacity:.6;pointer-events:none}
+.stop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26px;position:relative;z-index:1}
+.sico{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center}
+.sico svg,.staff .btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.stag{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#111113}
+.scard h3{font-size:26px;font-weight:700}
+.scard.big h3{font-size:clamp(32px,5vw,46px)}
+.scard p{margin:0;color:var(--muted)}
+.staff .btn{display:inline-flex;align-items:center;gap:10px;justify-self:start;margin-top:8px}
+.staff .btn svg{width:17px;height:17px}
+.sapply{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px;padding:22px 28px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.sapply b{display:block;font-size:17px}
+.sapply span{font-size:14px;color:var(--muted)}
+.sfoot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+input[type=file]{padding:9px}
+@media (max-width:760px){.sgrid{grid-template-columns:1fr}.scard.big{min-height:0}}
+.step.cat{grid-template-columns:1fr auto;align-items:center;transition:transform .15s,border-color .15s}
+.step.cat p{grid-column:1}
+.step.cat i{grid-column:2;grid-row:1/3;font-size:26px}
+.step.cat:hover{border-color:var(--text);transform:translateY(-3px)}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.ccard{position:relative;display:grid;align-content:end;gap:6px;min-height:210px;padding:24px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(160deg,var(--raised),#111113 70%);transition:transform .15s,border-color .15s}
+.ccard:hover{border-color:var(--text);transform:translateY(-4px)}
+.ccard .sico{position:absolute;top:22px;left:24px}
+.ccard h3{font-size:26px;font-weight:700}
+.ccard p{margin:0;font-size:14px;color:var(--muted)}
+.ccard i{position:absolute;top:28px;right:26px;font-style:normal;font-size:22px;color:var(--muted)}
+.ccard:hover i{color:var(--text)}
+@media (prefers-reduced-motion:reduce){.ccard{transition:none}}
+
+/* ---- roomier layout ---- */
+html{scroll-behavior:smooth}
+body{font-size:17px}
+.wrap{max-width:1360px;padding:0 40px}
+.top .wrap{padding-top:20px;padding-bottom:20px;gap:24px}
+.brand{font-size:27px}
+.nav{gap:8px}
+.nav a,.nav button{padding:10px 16px;font-size:15px}
+.social a,.social button{width:42px;height:42px}
+.banner{padding:14px 24px;font-size:15px}
+section{padding:96px 0 0}
+main{padding-bottom:120px;display:block}
+.head{margin-bottom:38px}
+.head h2{font-size:clamp(32px,4.600vw,52px)}
+.hero-body{padding:140px 40px 110px;gap:30px}
+.hero p{font-size:20px}
+.cta{gap:18px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));max-width:820px}
+.cta a,.cta button{padding:26px 28px;border-radius:18px}
+.cta b{font-size:23px}
+.cta span{font-size:15px}
+.cats{gap:24px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.ccard{min-height:300px;padding:34px;border-radius:26px}
+.ccard .sico{top:32px;left:34px;width:56px;height:56px}
+.ccard .sico svg{width:24px;height:24px}
+.ccard i{top:40px;right:36px;font-size:26px}
+.ccard h3{font-size:32px}
+.ccard p{font-size:15px}
+.steps{gap:24px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.step{padding:34px;border-radius:22px;gap:12px}
+.step i{font-size:40px}
+.step h3{font-size:24px}
+.step p{font-size:16px}
+.tiles{gap:22px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.tile{border-radius:20px;font-size:21px;padding:22px}
+.tile small{font-size:13px;margin-top:8px}
+.grid{gap:24px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.artist{gap:14px}
+.ava{border-radius:20px;font-size:52px}
+.artist .nm{font-size:16px}
+.tools{gap:16px;margin-bottom:30px}
+.tools input{padding:14px 18px;max-width:460px}
+.chip{padding:10px 18px;font-size:14px}
+.pack{gap:48px;grid-template-columns:minmax(260px,440px) 1fr}
+.pack .cover{border-radius:24px}
+dl{gap:14px 32px;margin:30px 0}
+.btn{padding:15px 28px;font-size:16px}
+.btn.sm{padding:9px 16px;font-size:14px}
+.panel{padding:36px;border-radius:22px;max-width:760px}
+form{gap:20px}
+input,select,textarea{padding:13px 15px;border-radius:12px}
+.people,.roles{gap:22px}
+.person{padding:24px;border-radius:20px}
+.role{padding:32px;border-radius:22px;gap:14px}
+.kpis{gap:22px;margin-bottom:36px}
+.kpis div{padding:26px 28px;border-radius:20px}
+.cols{gap:32px;margin:36px 0}
+.sub{margin:44px 0 18px;font-size:23px}
+.rows{gap:12px}
+.row{padding:18px 22px;border-radius:16px;gap:14px}
+.shead{padding-bottom:40px;margin-bottom:40px}
+.sgrid{gap:24px}
+.scard{padding:38px;gap:18px}
+.scard.big{padding:48px;min-height:460px}
+.sapply{margin-top:40px;padding:30px 36px;border-radius:20px}
+.sfoot{margin-top:40px;padding-top:26px}
+.lock{margin:60px auto;padding:56px 40px;border-radius:26px;gap:20px}
+footer{padding:44px 0;font-size:14px}
+@media (max-width:760px){
+  .wrap{padding:0 20px}
+  section{padding-top:64px}
+  main{padding-bottom:80px}
+  .hero-body{padding:72px 20px 60px}
+  .ccard{min-height:220px}
+  .scard.big{padding:30px;min-height:0}
+  .pack{grid-template-columns:1fr;gap:28px}
+  .panel{padding:24px}
+}
+
+/* ---- smooth motion ---- */
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+#view>*{animation:rise .7s cubic-bezier(.2,.7,.2,1) backwards}
+#view>*:nth-child(2){animation-delay:.1s}
+#view>*:nth-child(3){animation-delay:.2s}
+#view>*:nth-child(n+4){animation-delay:.3s}
+.cats>*,.tiles>*,.grid>*,.steps>*,.sgrid>*,.roles>*,.people>*,.cta>*{animation:rise .65s cubic-bezier(.2,.7,.2,1) backwards}
+:is(.cats,.tiles,.grid,.steps,.sgrid,.roles,.people,.cta)>*:nth-child(1){animation-delay:.12s}
+:is(.cats,.tiles,.grid,.steps,.sgrid,.roles,.people,.cta)>*:nth-child(2){animation-delay:.2s}
+:is(.cats,.tiles,.grid,.steps,.sgrid,.roles,.people,.cta)>*:nth-child(3){animation-delay:.28s}
+:is(.cats,.tiles,.grid,.steps,.sgrid,.roles,.people,.cta)>*:nth-child(4){animation-delay:.36s}
+:is(.cats,.tiles,.grid,.steps,.sgrid,.roles,.people,.cta)>*:nth-child(n+5){animation-delay:.44s}
+.ccard,.tile,.scard,.step,.role,.person,.row,.cta a,.cta button,.rank a,.ava{transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .35s ease,background-color .35s ease,box-shadow .35s ease,filter .35s ease}
+.ccard:hover,.tile:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.scard:hover,.role:hover,.person:hover{border-color:#5c5c63}
+.btn,.nav a,.chip,.more,.social a,.back{transition:background-color .25s ease,color .25s ease,border-color .25s ease,transform .25s ease,opacity .25s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn[disabled]:hover,.btn[aria-disabled="true"]:hover{transform:none}
+.ccard i,.artist .nm i{transition:transform .35s cubic-bezier(.2,.7,.2,1),color .25s ease}
+.ccard:hover i,.artist:hover .nm i{transform:translateX(5px)}
+#toast{transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1);transform:translate(-50%,12px)}
+#toast.on{transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #view>*,.cats>*,.tiles>*,.grid>*,.steps>*,.sgrid>*,.roles>*,.people>*,.cta>*{animation:none}
+  .ccard,.tile,.scard,.step,.role,.person,.row,.btn,.ccard i,.artist .nm i,#toast{transition:none}
+}
+.still #view *{animation:none !important}
+.still #view>*{animation:none !important}
+html:has(.still){scroll-behavior:auto}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home">aerascps.<sup>™</sup></a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#home" data-r="home">Home</a>
+      <a href="#packs" data-r="packs">Scenepacks</a>
+      <a href="#request" data-r="request">Request</a>
+      <a href="#team" data-r="team">About the team</a>
+      <a href="#join" data-r="join">Join the team</a>
+      <a href="#staff" data-r="staff">Staff access</a>
+    </nav>
+    <div class="social" id="social"></div>
+  </div>
+</header>
+<div id="banner"></div>
+<main id="view"></main>
+<footer>
+  <div class="wrap">
+    <span><b style="color:var(--text);font-family:var(--display)">aerascps.™</b> &nbsp;Multifandom scenepack archive</span>
+    <a class="more" href="#staff">Staff access</a>
+    <span>© 2026 aerascps. Fan-made, not affiliated with any artist.</span>
+  </div>
+</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* Join-the-team roles are the only thing set here. Everything else is managed in the Admin panel. */
+const ROLES = [
+  { name:"Moderator",         text:"Keep the Discord friendly and requests moving.", link:"https://appy.bot/apply/cmvgoixmm003zl906cmblnbb4" },
+  { name:"Scenepack Creator", text:"Cut, upscale and upload packs for the archive.", link:"https://appy.bot/apply/cmvgoiqqa003xl906dn477mmd" },
+  { name:"Administrator",     text:"Run the team and approve submissions.",          link:"" }
+];
+
+const CATS = [
+  { id:"music",  name:"Music artists", icon:'<path d="M9 18V6l10-2v12"/><circle cx="6.500" cy="18" r="2.500"/><circle cx="16.500" cy="16" r="2.500"/>' },
+  { id:"tv",     name:"TV shows",      icon:'<rect x="3" y="7" width="18" height="12" rx="2"/><path d="m8 3 4 4 4-4"/>' },
+  { id:"movies", name:"Movies",        icon:'<path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9Z"/><path d="m4 10-.800-3 14.500-3.900.800 3L4 10Z"/><path d="m8.500 5.600 2 3M13.500 4.300l2 3"/>' },
+  { id:"series", name:"Series",        icon:'<rect x="3" y="9" width="18" height="11" rx="2"/><path d="M6 6h12M8 3h8"/>' }
+];
+const catCards = () => `<div class="cats">${CATS.map(c => { const n = subjects(c.id).length, k = SITE.packs.filter(p => p.category === c.id).length;
+  return `<a class="ccard" href="#${c.id}"><span class="sico"><svg viewBox="0 0 24 24">${c.icon}</svg></span><h3>${c.name}</h3><p>${k ? `${k} scenepack${k===1?"":"s"} · ${n} ${n===1?"name":"names"}` : "Nothing published yet"}</p><i>→</i></a>`; }).join("")}</div>`;
+let SITE = { settings:{ announcement:{text:"",link:""}, socials:{discord:"",instagram:"",tiktok:""} }, packs:[], team:[] };
+let ME = { user:null, admin:false, creator:false };
+let ONLINE = false;   // true when the page is served by server.js
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const initials = n => n.split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase();
+const hue = n => [...n].reduce((a,c) => a + c.charCodeAt(0), 0) * 37 % 360;
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const catName = id => (CATS.find(c => c.id === id) || CATS[0]).name;
+const keyOf = p => p.category + "-" + slug(p.subject);
+// the names inside a category come from the published scenepacks
+function subjects(cat){
+  const m = new Map();
+  [...SITE.packs].sort((a,b) => b.createdAt - a.createdAt).forEach(p => {
+    if(cat && p.category !== cat) return;
+    const k = keyOf(p), s = m.get(k) || { key:k, name:p.subject, cat:p.category, image:"", count:0 };
+    s.count++; if(!s.image && p.image) s.image = p.image; m.set(k, s);
+  });
+  return [...m.values()].sort((a,b) => a.name.localeCompare(b.name));
+}
+const size = n => n >= 1073741824 ? (n/1073741824).toFixed(2)+" GB" : n >= 1048576 ? (n/1048576).toFixed(1)+" MB" : Math.max(1,Math.round(n/1024))+" KB";
+const newest = () => [...SITE.packs].sort((a,b) => b.createdAt - a.createdAt);
+
+async function api(path, method = "GET", body){
+  const r = await fetch(path, { method, credentials:"same-origin", headers: body ? {"Content-Type":"application/json"} : {}, body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json().catch(() => null);
+  if(!r.ok || !j) throw new Error((j && j.error) || "Could not reach the server.");
+  return j;
+}
+async function loadSite(){
+  const s = await api("api/site");
+  if(!Array.isArray(s.packs)) throw new Error("Bad data");
+  SITE = s;
+}
+
+let toastT;
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("on"),3000); }
+
+const ICON = {
+  discord:'<svg viewBox="0 0 24 24"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.600 15.600 0 0 0-5.800 0L8.600 4a17 17 0 0 0-4.200 1.200C1.700 9.200 1 13 1.300 16.800a17 17 0 0 0 5.200 2.600l1.100-1.800a11 11 0 0 1-1.700-.800l.400-.300a12.200 12.200 0 0 0 11.400 0l.400.300c-.500.300-1.100.600-1.700.800l1.100 1.800a17 17 0 0 0 5.200-2.600c.400-4.400-.700-8.200-3.100-11.600ZM8.700 14.600c-1 0-1.900-1-1.900-2.100s.800-2.100 1.900-2.100 1.900 1 1.900 2.100-.800 2.100-1.900 2.100Zm6.600 0c-1 0-1.900-1-1.900-2.100s.800-2.100 1.900-2.100 1.900 1 1.900 2.100-.800 2.100-1.900 2.100Z"/></svg>',
+  instagram:'<svg viewBox="0 0 24 24"><path d="M12 7.300A4.700 4.700 0 1 0 12 16.700 4.700 4.700 0 0 0 12 7.300Zm0 7.700a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm6-7.900a1.100 1.100 0 1 1-2.200 0 1.100 1.100 0 0 1 2.200 0ZM16.500 3h-9A4.500 4.500 0 0 0 3 7.500v9A4.500 4.500 0 0 0 7.500 21h9a4.500 4.500 0 0 0 4.500-4.500v-9A4.500 4.500 0 0 0 16.500 3Zm2.800 13.500a2.800 2.800 0 0 1-2.800 2.800h-9a2.800 2.800 0 0 1-2.800-2.800v-9a2.800 2.800 0 0 1 2.800-2.800h9a2.800 2.800 0 0 1 2.800 2.800v9Z"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24"><path d="M16.500 3h-3v12.200a2.600 2.600 0 1 1-2.600-2.600c.300 0 .500 0 .800.100V9.600a5.700 5.700 0 1 0 4.800 5.600V9.300a7 7 0 0 0 4 1.300v-3a4 4 0 0 1-4-4.600Z"/></svg>'
+};
+const ext = (url, inner, cls = "", label = "") => `<a class="${cls}" href="${esc(url)}" target="_blank" rel="noopener"${label ? ` aria-label="${esc(label)}"` : ""}>${inner}</a>`;
+
+function chrome(){
+  const so = SITE.settings.socials;
+  $("#social").innerHTML = ["discord","instagram","tiktok"].filter(k => so[k]).map(k => ext(so[k], ICON[k], "", k[0].toUpperCase()+k.slice(1))).join("");
+  const a = SITE.settings.announcement;
+  const inner = `<svg viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg><span>${esc(a.text)}</span>${a.link ? '<svg viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M11 7H6v11h11v-5"/></svg>' : ""}`;
+  $("#banner").innerHTML = !a.text ? "" : a.link ? ext(a.link, inner, "banner") : `<div class="banner">${inner}</div>`;
+}
+
+const grey = n => `background:linear-gradient(${120+hue(n)%90}deg,hsl(0 0% ${26+hue(n)%14}%),hsl(0 0% ${9+hue(n)%8}%))`;
+const artistCard = a => `<a class="artist" href="#artist-${esc(a.key)}"><div class="ava" style="${grey(a.name)}">${a.image ? `<img src="${esc(a.image)}" alt="">` : esc(initials(a.name))}</div><div class="nm"><span>${esc(a.name)}</span><i>→</i></div></a>`;
+const tile = p => `<a class="tile" href="#pack-${esc(p.id)}" data-s="${esc((p.title+" "+p.subject).toLowerCase())}" data-q="${esc(p.quality)}">${p.image ? `<img src="${esc(p.image)}" alt="">` : ""}<span class="badge ${p.badge==="Ready"?"live":""}">${esc(p.badge)}</span><span class="q">${esc(p.quality)}</span><span class="tt">${esc(p.title)}<small>${esc(p.subject)}</small></span></a>`;
+const empty = (msg, btn = "") => `<div class="panel"><p style="margin:0 0 ${btn ? 14 : 0}px" class="muted">${msg}</p>${btn}</div>`;
+function people(){
+  return SITE.team.length ? `<div class="people">${SITE.team.map(t => `<div class="person"><div class="pf">${esc(initials(t.name))}</div><div><b>${esc(t.name)}</b><span>${esc(t.role)}</span></div>${t.discord ? ext(t.discord, "Discord", "more push") : ""}</div>`).join("")}</div>` : "";
+}
+
+/* ---------- public views ---------- */
+const V = {
+  home(){
+    const frames = ["SCENE 01","SCENE 02","SCENE 03","SCENE 04","SCENE 05","SCENE 06","SCENE 07","SCENE 08"];
+    const strip = [...frames,...frames,...frames].map(t => `<div class="frame" data-t="${t}"></div>`).join("");
+    const recent = newest().slice(0,8);
+    return `
+    <div class="hero">
+      <div class="reel" aria-hidden="true"><div class="strip">${strip}</div><div class="strip rev">${strip}</div><div class="strip">${strip}</div><div class="strip rev">${strip}</div></div>
+      <div class="wrap hero-body">
+        <div class="eyebrow">Multifandom scenepack archive</div>
+        <h1>Your source for scenes, artists &amp; visuals.</h1>
+        <p>Scenepacks hand-picked by the team and ready to download for your next edit.</p>
+        <div class="cta">
+          <a class="primary" href="#packs"><b>Browse scenepacks</b><span>Music artists, TV shows, movies and series</span></a>
+          <a href="#request"><b>Make a request</b><span>Ask for a scene or an edit</span></a>
+        </div>
+      </div>
+    </div>
+    <section class="wrap"><div class="head"><h2>Pick a category</h2><a class="more" href="#packs">All scenepacks →</a></div>
+      ${catCards()}
+    </section>
+    ${recent.length ? `<section class="wrap"><div class="head"><h2>Latest scenepacks</h2><a class="more" href="#packs">Browse all →</a></div><div class="tiles">${recent.map(tile).join("")}</div></section>` : ""}
+    <section class="wrap">
+      <div class="head"><h2>How it works</h2></div>
+      <div class="steps">
+        <div class="step"><i>01</i><h3>Pick a category</h3><p>Music artists, TV shows, movies or series.</p></div>
+        <div class="step"><i>02</i><h3>Download the pack</h3><p>Every pack page lists the quality and uploader next to the download button.</p></div>
+        <div class="step"><i>03</i><h3>Credit and post</h3><p>Tag aerascps. in your edit so others can find the scenes.</p></div>
+      </div>
+    </section>
+    ${SITE.team.length ? `<section class="wrap"><div class="head"><h2>The team</h2></div>${people()}</section>` : ""}`;
+  },
+  cat(id){
+    const c = CATS.find(x => x.id === id), list = subjects(id);
+    return `<section class="wrap"><a class="back" href="#packs">← Scenepacks</a><div class="head"><h2>${c.name}</h2><span class="muted">${list.length} ${list.length===1?"name":"names"}</span></div>
+      ${list.length ? `<div class="grid">${list.map(artistCard).join("")}</div>` : empty(`No ${c.name.toLowerCase()} scenepacks have been published yet.`, `<a class="btn" href="#request">Make a request</a>`)}</section>`;
+  },
+  artist(key){
+    const a = subjects().find(x => x.key === key);
+    if(!a) return V.packs();
+    const ps = newest().filter(p => keyOf(p) === key);
+    return `<section class="wrap"><a class="back" href="#${a.cat}">← ${catName(a.cat)}</a><div class="head"><h2>${esc(a.name)}</h2><span class="muted">${ps.length} scenepack${ps.length===1?"":"s"}</span></div>
+      <div class="tiles">${ps.map(tile).join("")}</div></section>`;
+  },
+  packs(){
+    const top = `<section class="wrap"><div class="head"><h2>Scenepacks</h2><span class="muted">Pick a category</span></div>${catCards()}</section>`;
+    if(!SITE.packs.length) return top;
+    const qs = ["All", ...new Set(SITE.packs.map(p => p.quality))];
+    return top + `<section class="wrap"><div class="head"><h2>All scenepacks</h2><span class="muted" id="count"></span></div>
+      <div class="tools"><input id="search" type="search" placeholder="Search by name or scene" aria-label="Search scenepacks">
+      <div class="chips">${qs.map(q => `<button type="button" class="chip" data-q="${esc(q)}" aria-pressed="${q===packFilter}">${esc(q)}</button>`).join("")}</div></div>
+      <div class="tiles">${newest().map(tile).join("")}</div><p class="note" id="none" hidden>No scenepacks match. Try another search or <a class="more" href="#request">make a request</a>.</p></section>`;
+  },
+  pack(id){
+    const p = SITE.packs.find(x => x.id === id);
+    if(!p) return V.packs();
+    return `<section class="wrap"><a class="back" href="#artist-${esc(keyOf(p))}">← ${esc(p.subject)}</a>
+      <div class="pack"><div class="cover">${p.image ? `<img src="${esc(p.image)}" alt="">` : esc(initials(p.subject))}</div><div>
+        <div class="eyebrow">${esc(p.badge)}</div><h1>${esc(p.title)}</h1><div class="muted">${esc(p.subject)}</div>
+        <dl><dt>Category</dt><dd>${catName(p.category)}</dd><dt>Uploader</dt><dd>${esc(p.uploader)}</dd><dt>Quality</dt><dd>${esc(p.quality)}</dd>${p.file ? `<dt>File</dt><dd>${esc(p.file.name)}</dd>` : ""}<dt>Added</dt><dd>${new Date(p.createdAt).toLocaleDateString()}</dd></dl>
+        ${p.file ? `<a class="btn" href="download/${esc(p.id)}">Download scenepack${p.file.size ? " · " + size(p.file.size) : ""}</a>` : p.link ? ext(p.link, "Download scenepack", "btn") : `<button class="btn" type="button" disabled>No download yet</button>`}
+        <p class="note">Credit aerascps. when you post your edit.</p>
+      </div></div></section>`;
+  },
+  request(){
+    return `<section class="wrap"><div class="head"><h2>Make a request</h2></div>
+      <div class="panel"><form id="req">
+        <label for="rq-artist">Artist, show, movie or series<input id="rq-artist" required list="rq-list" placeholder="Name"><datalist id="rq-list">${subjects().map(a => `<option value="${esc(a.name)}">`).join("")}</datalist></label>
+        <label for="rq-scene">Scene or source<input id="rq-scene" required placeholder="e.g. awards interview, full red carpet"></label>
+        <label for="rq-q">Quality<select id="rq-q"><option>4K</option><option>1080p</option><option>Any</option></select></label>
+        <label for="rq-notes">Details<textarea id="rq-notes" placeholder="Timestamps, links, colouring notes"></textarea></label>
+        <label for="rq-user">Your Discord username<input id="rq-user" required placeholder="username"></label>
+        <button class="btn" type="submit" style="justify-self:start">Send request</button>
+      </form><div id="req-out"></div></div></section>`;
+  },
+  staff(){ return staffBlock(); },
+  team(){
+    return `<section class="wrap"><div class="head"><h2>About the team</h2></div>${people() || empty("The team has not been listed yet.")}</section>`;
+  },
+  join(){
+    return `<section class="wrap"><div class="head"><h2>Join the team</h2></div><div class="roles">${ROLES.map(r => `<div class="role"><h3>${esc(r.name)}</h3><p>${esc(r.text)}</p>${r.link ? ext(r.link, "Apply", "btn") : `<span class="btn ghost">Applications closed</span>`}</div>`).join("")}</div></section>`;
+  },
+
+  /* ---------- locked panels ---------- */
+  async studio(){
+    const gate = lock("studio"); if(gate) return gate;
+    const { packs } = await api("api/studio/packs");
+    const n = s => packs.filter(p => p.status === s).length;
+    return `<section class="wrap">${panelHead("Scenepack studio")}
+      <div class="kpis"><div><b class="num">${packs.length}</b><span>Submitted</span></div><div><b class="num">${n("approved")}</b><span>Approved</span></div><div><b class="num">${n("pending")}</b><span>Waiting for review</span></div></div>
+      <div class="cols">
+        <div class="panel"><h3>Submit a scenepack</h3>
+          <form id="f-submit">
+            <label for="sp-title">Title<input id="sp-title" required maxlength="80" placeholder="e.g. Interview clips"></label>
+            <label for="sp-cat">Category<select id="sp-cat">${CATS.map(c => `<option value="${c.id}">${c.name}</option>`).join("")}</select></label>
+            <label for="sp-subject">Name of the artist, show, movie or series<input id="sp-subject" required maxlength="60" list="sp-list" placeholder="Type any name"><datalist id="sp-list">${subjects().map(a => `<option value="${esc(a.name)}">`).join("")}</datalist></label>
+            <label for="sp-q">Quality<select id="sp-q"><option>4K</option><option>1080p</option><option>720p</option></select></label>
+            <label for="sp-badge">Status<select id="sp-badge"><option>Ready</option><option>In progress</option><option>To be updated</option></select></label>
+            ${SITE.uploads === "none" ? `<p class="note" style="margin:0">File uploads are not set up on this host yet, so paste a link to the scenepack instead.</p><input id="sp-file" type="file" hidden>` : `<label for="sp-file">Scenepack file (stored for direct download, up to ${size((SITE.maxUploadMB || 10240) * 1048576)})<input id="sp-file" type="file"></label>`}
+            <label for="sp-link">${SITE.uploads === "none" ? "Link to scenepack" : "Or an outside link"}<input id="sp-link" type="url" placeholder="https://"></label>
+            <label for="sp-image">Image link (optional)<input id="sp-image" type="url" placeholder="https://"></label>
+            <button class="btn" type="submit" style="justify-self:start">Submit for review</button><p class="note" id="sp-status" style="margin:0" role="status"></p>
+          </form>
+        </div>
+        <div><h3 class="sub">My scenepacks</h3>${packs.length ? `<div class="rows">${packs.map(p => row(p, p.status !== "approved" ? act("delmine", p.id, "Delete") : "")).join("")}</div>` : `<p class="muted">Nothing submitted yet.</p>`}</div>
+      </div></section>`;
+  },
+  async admin(){
+    const gate = lock("admin"); if(gate) return gate;
+    const { packs, requests } = await api("api/admin/data");
+    const pending = packs.filter(p => p.status === "pending"), rest = packs.filter(p => p.status !== "pending");
+    const s = SITE.settings;
+    return `<section class="wrap">${panelHead("Control room")}
+      <h3 class="sub">Waiting for review <span class="muted num">${pending.length}</span></h3>
+      ${pending.length ? `<div class="rows">${pending.map(p => row(p, (p.file ? `<a class="btn sm ghost" href="download/${esc(p.id)}">Download file</a>` : p.link ? ext(p.link, "Open link", "btn sm ghost") : "") + act("approve", p.id, "Approve", "") + act("reject", p.id, "Reject"))).join("")}</div>` : `<p class="muted">No submissions waiting.</p>`}
+
+      <h3 class="sub">All scenepacks <span class="muted num">${rest.length}</span></h3>
+      ${rest.length ? `<div class="rows">${rest.map(p => row(p, (p.status === "rejected" ? act("approve", p.id, "Approve", "") : "") + act("delpack", p.id, "Delete"))).join("")}</div>` : `<p class="muted">No scenepacks yet. Creators submit them in the Scenepack panel.</p>`}
+
+      <div class="cols">
+        <div class="panel"><h3>Team</h3>
+          <form id="f-team"><label for="tm-name">Name<input id="tm-name" required maxlength="60"></label><label for="tm-role">Role<input id="tm-role" required maxlength="60" placeholder="Founder"></label><label for="tm-discord">Discord link (optional)<input id="tm-discord" type="url" placeholder="https://"></label><button class="btn" type="submit" style="justify-self:start">Add person</button></form>
+          <div class="rows tight">${SITE.team.map(t => `<div class="row"><div><b>${esc(t.name)}</b><span>${esc(t.role)}</span></div>${act("delteam", t.id, "Remove")}</div>`).join("")}</div>
+        </div>
+      </div>
+
+      <div class="panel wide"><h3>Announcement and links</h3>
+        <form id="f-settings" class="two">
+          <label for="st-text">Announcement text (empty hides the banner)<input id="st-text" maxlength="160" value="${esc(s.announcement.text)}"></label>
+          <label for="st-link">Announcement link<input id="st-link" type="url" placeholder="https://" value="${esc(s.announcement.link)}"></label>
+          <label for="st-discord">Discord invite<input id="st-discord" type="url" placeholder="https://" value="${esc(s.socials.discord)}"></label>
+          <label for="st-instagram">Instagram<input id="st-instagram" type="url" placeholder="https://" value="${esc(s.socials.instagram)}"></label>
+          <label for="st-tiktok">TikTok<input id="st-tiktok" type="url" placeholder="https://" value="${esc(s.socials.tiktok)}"></label>
+          <button class="btn" type="submit" style="justify-self:start;align-self:end">Save</button>
+        </form>
+      </div>
+
+      <h3 class="sub">Requests inbox <span class="muted num">${requests.length}</span></h3>
+      ${requests.length ? `<div class="rows">${requests.map(r => `<div class="row"><div><b>${esc(r.artist)}: ${esc(r.scene)}</b><span>${esc(r.quality || "Any")} · from ${esc(r.user)} · ${new Date(r.createdAt).toLocaleDateString()}${r.notes ? " · " + esc(r.notes) : ""}</span></div>${act("delreq", r.id, "Done")}</div>`).join("")}</div>` : `<p class="muted">No requests.</p>`}
+    </section>`;
+  }
+};
+
+const act = (a, id, label, cls = "ghost") => `<button type="button" class="btn sm ${cls}" data-act="${a}" data-id="${esc(id)}">${label}</button>`;
+const row = (p, actions) => `<div class="row"><div><b>${esc(p.title)}</b><span>${catName(p.category)} · ${esc(p.subject)} · ${esc(p.quality)} · by ${esc(p.uploader)} · ${p.file ? "file" + (p.file.size ? " " + size(p.file.size) : "") : p.link ? "outside link" : "no download"}</span></div><span class="badge st ${p.status==="approved"?"live":""}">${esc(p.status)}</span>${actions}</div>`;
+const panelHead = title => `<div class="head"><h2>${title}</h2><span class="who">${ME.user.avatar ? `<img src="${esc(ME.user.avatar)}" alt="">` : ""}${esc(ME.user.username)} <a class="more" href="auth/logout">Sign out</a></span></div>`;
+const DISCORD_BTN = next => `<a class="btn discord" href="auth/login?next=${next}">${ICON.discord}Sign in with Discord</a>`;
+function lock(kind){
+  const title = kind === "admin" ? "Control room" : "Scenepack studio";
+  const role = kind === "admin" ? "admin" : "Scenepack Creator";
+  const ok = kind === "admin" ? ME.admin : ME.creator;
+  if(ONLINE && ok) return "";
+  let body;
+  if(!ONLINE) body = `<p>This panel opens with Discord sign-in, which runs on your own server. This preview has no server behind it, so the panel stays locked here.</p><span class="btn discord" aria-disabled="true">${ICON.discord}Sign in with Discord</span>`;
+  else if(!ME.user) body = `<p>Staff only. Sign in with the Discord account that has the ${role} role in the server.</p>${DISCORD_BTN(kind)}`;
+  else body = `<p>Signed in as <b>${esc(ME.user.username)}</b>. This account does not have the ${role} role in the server.</p><a class="btn ghost" href="auth/logout">Sign out</a>`;
+  return `<section class="wrap"><div class="lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><h2>${title}</h2>${body}</div></section>`;
+}
+
+function staffBlock(){
+  const card = (kind, cls, icon, tag, title, text, ok) => {
+    const href = ONLINE && !ME.user ? `auth/login?next=${kind}` : `#${kind}`;
+    const label = ME.user ? (ok ? "Open" : "No access with this account") : "Sign in to unlock";
+    const glyph = ME.user && ok ? '<path d="M5 12h14M13 6l6 6-6 6"/>' : '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
+    return `<div class="scard ${cls}"><div class="stop"><span class="sico"><svg viewBox="0 0 24 24">${icon}</svg></span><span class="stag">${tag}</span></div>
+      <h3>${title}</h3><p>${text}</p><a class="btn" href="${href}">${label}<svg viewBox="0 0 24 24">${glyph}</svg></a></div>`;
+  };
+  return `<section class="wrap staff" id="staff-block">
+    <div class="shead"><div><div class="eyebrow">aerascps / staff access</div><h2>your work, in one place.</h2></div>
+      <span class="spill"><i class="${ME.user ? "on" : ""}"></i>${ME.user ? esc(ME.user.username) : "staff workspace"}</span></div>
+    <div class="sgrid">
+      ${card("studio", "big", '<path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9Z"/><path d="m4 10-.800-3 14.500-3.900.800 3L4 10Z"/><path d="m8.500 5.600 2 3M13.500 4.300l2 3"/>', "scenepacks", "scenepack studio", "submit, upload and track your aerascps.™ scenepacks.", ME.creator)}
+      ${card("admin", "", '<path d="M12 3 5 6v5c0 4.500 3 8 7 10 4-2 7-5.500 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/>', "operations", "control room", "keep the archive, access, and community in order.", ME.admin)}
+    </div>
+    <div class="sapply"><div><b>not a staff member yet?</b><span>applications are reviewed in the aerascps discord.</span></div><a class="btn" href="#join">apply here<svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
+    <div class="sfoot"><span>internal tools for aerascps staff.</span><span>discord verified access</span></div>
+  </section>`;
+}
+
+/* ---------- routing ---------- */
+let packFilter = "All", routeN = 0;
+async function route(){
+  const h = (location.hash || "#home").slice(1), n = ++routeN;
+  let html, cur = h;
+  try{
+    if(h.startsWith("artist-")){ html = V.artist(h.slice(7)); cur = "packs"; }
+    else if(CATS.some(c => c.id === h)){ html = V.cat(h); cur = "packs"; }
+    else if(h.startsWith("pack-")){ html = V.pack(h.slice(5)); cur = "packs"; }
+    else if(V[h] && h !== "artist" && h !== "pack" && h !== "cat"){ html = await V[h](); if(h === "studio" || h === "admin") cur = "staff"; }
+    else { html = V.home(); cur = "home"; }
+  }catch(e){ html = `<section class="wrap">${empty(esc(e.message))}</section>`; }
+  if(n !== routeN) return;
+  $("#view").innerHTML = html;
+  document.querySelectorAll("#nav a").forEach(a => a.dataset.r === cur ? a.setAttribute("aria-current","page") : a.removeAttribute("aria-current"));
+  applyFilter();
+}
+function applyFilter(){
+  const box = $("#search"); if(!box) return;
+  const q = box.value.trim().toLowerCase(); let n = 0;
+  document.querySelectorAll(".tiles .tile").forEach(t => {
+    const ok = (packFilter==="All" || t.dataset.q===packFilter) && t.dataset.s.includes(q);
+    t.hidden = !ok; if(ok) n++;
+  });
+  $("#count").textContent = n + " shown"; $("#none").hidden = n > 0;
+}
+async function refresh(msg){
+  const y = window.scrollY; document.body.classList.add("still");
+  await loadSite(); chrome(); await route(); window.scrollTo(0, y);
+  requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.remove("still")));
+  if(msg) toast(msg);
+}
+
+const ACTS = {
+  approve:  id => api(`api/admin/packs/${id}/approve`, "POST", {}),
+  reject:   id => api(`api/admin/packs/${id}/reject`, "POST", {}),
+  delpack:  id => api(`api/admin/packs/${id}`, "DELETE", {}),
+  delteam:  id => api(`api/admin/team/${id}`, "DELETE", {}),
+  delreq:   id => api(`api/admin/requests/${id}`, "DELETE", {}),
+  delmine:  id => api(`api/studio/packs/${id}`, "DELETE", {})
+};
+function upload(id, file, onPct){
+  return new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open("PUT", `api/studio/packs/${id}/file?name=${encodeURIComponent(file.name)}`);
+    x.setRequestHeader("Content-Type", "application/octet-stream");
+    x.upload.onprogress = e => { if(e.lengthComputable) onPct(Math.round(e.loaded / e.total * 100)); };
+    x.onload = () => { if(x.status === 200) return resolve(); let m = "Upload failed."; try{ m = JSON.parse(x.responseText).error || m; }catch{} reject(new Error(m)); };
+    x.onerror = () => reject(new Error("Upload failed. The file may be too large for the server or its proxy."));
+    x.send(file);
+  });
+}
+// Cloudflare: the file is sent in parts and stored in R2
+async function r2Upload(id, file, onPct){
+  onPct(0);
+  const { uploadId, partBytes } = await api(`api/studio/packs/${id}/upload/start`, "POST", { name:file.name, size:file.size });
+  const total = Math.max(1, Math.ceil(file.size / partBytes)), parts = [];
+  for(let i = 0; i < total; i++){
+    const chunk = file.slice(i * partBytes, (i + 1) * partBytes);
+    let done = null, err = null;
+    for(let attempt = 0; attempt < 3 && !done; attempt++){
+      try{
+        const r = await fetch(`api/studio/packs/${id}/upload/part?uploadId=${encodeURIComponent(uploadId)}&n=${i + 1}`, { method:"PUT", credentials:"same-origin", headers:{"Content-Type":"application/octet-stream"}, body:chunk });
+        const j = await r.json().catch(() => null);
+        if(!r.ok || !j) throw new Error((j && j.error) || "Upload failed.");
+        done = j;
+      }catch(e){ err = e; }
+    }
+    if(!done) throw err;
+    parts.push(done); onPct(Math.round((i + 1) / total * 100));
+  }
+  await api(`api/studio/packs/${id}/upload/complete`, "POST", { uploadId, parts, size:file.size });
+}
+// Vercel: the file goes from the browser straight to Vercel Blob storage
+async function blobUpload(id, file, onPct){
+  let mod;
+  try{ mod = await import("https://esm.sh/@vercel/blob@2.9.0/client"); }
+  catch{ mod = await import("https://cdn.jsdelivr.net/npm/@vercel/blob@2.9.0/dist/client.js/+esm"); }
+  const safe = file.name.replace(/[^\w.\- ()]/g, "_") || "scenepack";
+  onPct(0);
+  const blob = await mod.upload(`packs/${id}/${safe}`, file, { access:"public", handleUploadUrl:"/api/blob/upload", clientPayload:id, multipart: file.size > 50 * 1048576, onUploadProgress: e => onPct(Math.round(e.percentage)) });
+  await api(`api/studio/packs/${id}/blob`, "PUT", { url: blob.downloadUrl || blob.url, name: safe, size: file.size });
+}
+const val = id => $("#"+id).value.trim();
+const FORMS = {
+  "f-submit":   async () => {
+    const file = $("#sp-file").files[0], status = $("#sp-status");
+    if(!file && !val("sp-link")) throw new Error("Add a file or an outside link.");
+    const { id } = await api("api/studio/packs", "POST", { title:val("sp-title"), category:val("sp-cat"), subject:val("sp-subject"), quality:val("sp-q"), badge:val("sp-badge"), link:val("sp-link"), image:val("sp-image") });
+    if(!file) return;
+    try{ await (SITE.uploads === "blob" ? blobUpload : SITE.uploads === "r2" ? r2Upload : upload)(id, file, pct => status.textContent = `Uploading ${pct}%. Keep this page open.`); }
+    catch(err){ await api(`api/studio/packs/${id}`, "DELETE", {}).catch(() => {}); status.textContent = ""; throw err; }
+  },
+  "f-team":     () => api("api/admin/team", "POST", { name:val("tm-name"), role:val("tm-role"), discord:val("tm-discord") }),
+  "f-settings": () => api("api/admin/settings", "PUT", { text:val("st-text"), link:val("st-link"), discord:val("st-discord"), instagram:val("st-instagram"), tiktok:val("st-tiktok") })
+};
+
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]");
+  if(b){ b.disabled = true; try{ await ACTS[b.dataset.act](b.dataset.id); await refresh("Saved"); }catch(err){ b.disabled = false; toast(err.message); } return; }
+  const c = e.target.closest(".chip");
+  if(c){ packFilter = c.dataset.q; document.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x===c)); applyFilter(); return; }
+  if(e.target.closest("#copy")){
+    navigator.clipboard.writeText($("#req-text").textContent).then(() => toast("Copied. Paste it in Discord."), () => toast("Copy failed. Select the text and copy it."));
+  }
+});
+document.addEventListener("input", e => { if(e.target.id === "search") applyFilter(); });
+document.addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target.id;
+  if(FORMS[f]){ try{ await FORMS[f](); await refresh(f === "f-submit" ? "Submitted for review" : "Saved"); }catch(err){ toast(err.message); } return; }
+  if(f !== "req") return;
+  const r = { artist:val("rq-artist"), scene:val("rq-scene"), quality:val("rq-q"), notes:val("rq-notes"), user:val("rq-user") };
+  if(ONLINE){
+    try{ await api("api/requests", "POST", r); $("#req-out").innerHTML = `<p class="note">Request sent to the team. Thank you.</p>`; e.target.reset(); }
+    catch(err){ toast(err.message); }
+  }else{
+    const txt = `SCENEPACK REQUEST\nArtist: ${r.artist}\nScene: ${r.scene}\nQuality: ${r.quality}\nDetails: ${r.notes || "none"}\nRequested by: ${r.user}`;
+    $("#req-out").innerHTML = `<p class="note">This preview has no server, so the request was not sent. Copy it and paste it into Discord.</p><pre id="req-text">${esc(txt)}</pre><button class="btn" type="button" id="copy">Copy request</button>`;
+  }
+});
+window.addEventListener("hashchange", () => { route(); window.scrollTo(0,0); });
+
+(async () => {
+  try{ await loadSite(); ME = await api("api/me"); ONLINE = true; }catch{ /* preview without a server */ }
+  chrome(); route();
+})();
+</script>
+</body>
+</html>

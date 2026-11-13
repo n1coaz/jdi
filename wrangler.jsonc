@@ -1,0 +1,31 @@
+{
+  "name": "aerascps",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-01",
+  "keep_vars": true,
+
+  // the website pages
+  "assets": { "directory": "./public", "binding": "ASSETS" },
+
+  // the database (your D1 Database ID is filled in)
+  "d1_databases": [
+    { "binding": "DB", "database_name": "aerascps", "database_id": "314a5a0c-7618-4baf-9685-f1857793384e" }
+  ],
+
+  // settings (not secret). Check these against your old config.json.
+  // The Discord client SECRET does not go in this file: add it in the Cloudflare dashboard.
+  "vars": {
+    "BASE_URL": "https://aerascp.xyz",
+    "DISCORD_CLIENT_ID": "1570161500641829057",
+    "DISCORD_GUILD_ID": "1569854868720586794",
+    "ADMIN_ROLE_ID": "1570157667446562846",
+    "CREATOR_ROLE_ID": "1570415939474817064",
+    "MAX_UPLOAD_MB": "10240"
+  }
+
+  // OPTIONAL file uploads: create an R2 bucket named aerascps-files, then add a comma after
+  // the closing } of "vars" above and remove the // from the three lines below.
+  // "r2_buckets": [
+  //   { "binding": "FILES", "bucket_name": "aerascps-files" }
+  // ]
+}
